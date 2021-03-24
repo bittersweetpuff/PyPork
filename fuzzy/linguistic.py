@@ -16,13 +16,18 @@ def _callProperFun(v, value):
 
 def one_to_lingustic(pattern_name, value, level=0.5):
     value_patter = pattern[pattern_name]
+    max_val = 0
+    max_key = ''
     for k, v in value_patter.items():
-        if _callProperFun(v, value) >= level:
-            return k
-    return "not found"
+        res = _callProperFun(v, value)
+        if res > max_val :
+            max_val = res
+            max_key = k
+    return max_key
 
 def list_to_lingustic(pattern_name, values, level=0.5):
     results = []
+    value_patter = pattern[pattern_name]
     for value in values:
         res = one_to_lingustic(pattern_name, value, level)
         results.append(res)
