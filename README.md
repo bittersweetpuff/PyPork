@@ -1,2 +1,3 @@
 # PyPork
-Fuzzy logic implementation for Apache Pig
+
+PyPork is simple fuzzy logic implementation for [Apache Pig](https://pig.apache.org/).
