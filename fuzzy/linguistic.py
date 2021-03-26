@@ -1,17 +1,19 @@
 import fuzzy.membership_functions as functions
-pattern = {}
+import json
+with open('pattern.json') as f:
+    pattern = json.load(f)
 
 def _callProperFun(v, value):
     if v['function'] == 'triangle':
-        return functions.triangle_membership(value, v['a'], v['b'], v['c'])
+        return functions.triangle_membership(value, float(v['a']), float(v['b']), float(v['c']))
     elif v['function'] == 'trapezoid':
-        return functions.trapezoid_membership(value, v['a'], v['b'], v['c'], v['d'])
+        return functions.trapezoid_membership(value, float(v['a']), float(v['b']), float(v['c']), float(v['d']))
     elif v['function'] == 'l_class':
-        return functions.l_class_membership(value, v['a'], v['b'])
+        return functions.l_class_membership(value, float(v['a']), float(v['b']))
     elif v['function'] == 'y_class':
-        return functions.y_class_membership(value, v['a'], v['b'])
+        return functions.y_class_membership(value, float(v['a']), float(v['b']))
     elif v['function'] == 'gaussian':
-        return functions.gaussian(value, v['a'], v['b'])
+        return functions.gaussian(value, float(v['a']), float(v['b']))
 
 
 def one_to_lingustic(pattern_name, value, level=0.5):
