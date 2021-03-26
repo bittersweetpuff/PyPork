@@ -1,0 +1,14 @@
+{
+    "wzrost": {
+      "bardzoniski": {"function": "triangle", "a": 80,"b": 110,"c": 135},
+      "niski": {"function": "triangle", "a": 130,"b": 155,"c": 165},
+      "wysoki": {"function": "triangle", "a": 160,"b": 180,"c": 190},
+      "gigant": {"function": "triangle", "a": 180,"b": 200,"c": 220}
+    },
+    "wiek": {
+      "dzieciak":{"function": "triangle", "a":1,"b":5,"c":10},
+      "mlody":{"function": "triangle", "a":10,"b":15,"c":30},
+      "stary": {"function": "triangle", "a":25,"b":45,"c":55},
+      "emeryt": {"function": "triangle", "a":50,"b":80,"c":100}
+    }
+  }
