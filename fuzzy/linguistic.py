@@ -13,7 +13,7 @@ def _callProperFun(v, value):
     elif v['function'] == 'y_class':
         return functions.y_class_membership(value, float(v['a']), float(v['b']))
     elif v['function'] == 'gaussian':
-        return functions.gaussian(value, float(v['a']), float(v['b']))
+        return functions.gaussian_membership(value, float(v['a']), float(v['b']))
 
 
 def one_to_lingustic(pattern_name, value, level=0.5):

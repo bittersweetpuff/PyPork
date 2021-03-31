@@ -1,4 +1,4 @@
-import fuzzy.linguistic as lin
+import main_fuzzy as lin
 
 lin.add_new_pattern("wzrost",{
     "bardzoniski": {"function": "triangle", "a": 80,"b": 110,"c": 135},
