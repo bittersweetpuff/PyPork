@@ -1,5 +1,4 @@
-REGISTER 'myudf.py' using jython as myudfs
-REGISTER './main_fuzzy.py' using jython as fuzzy
+REGISTER '/home/piggy/PyPork/main_fuzzy.py' using jython as fuzzy
  
 users = LOAD 'user_data' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int);
 DUMP users;
@@ -21,7 +20,7 @@ DUMP grouped_fuzzy_users;
 -- (wysoki,{(ola,makota,175,wysoki,8,dzieciak),(ala,makota,170,wysoki,32,stary)})
  
 users2 = LOAD 'user_data' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int, zajecie:chararray);
-fuzzy_us2 = FOREACH users GENERATE fuzzy.one_to_lingustic('wzrost', wzrost,0.3) as fw, zajecie;
+fuzzy_us2 = FOREACH users2 GENERATE fuzzy.one_to_lingustic('wzrost', wzrost,0.3) as fw, zajecie;
  
 self_joined_fuzzy_users = JOIN fuzzy_users BY fuzzy_wzrost, fuzzy_us2 BY fw;
  
@@ -34,3 +33,23 @@ DUMP self_joined_fuzzy_users;
 -- (ola,makota,175,wysoki,8,dzieciak,wysoki,prawnik)
 -- (ala,makota,170,wysoki,32,stary,wysoki,pacjent)
 -- (ala,makota,170,wysoki,32,stary,wysoki,prawnik)
+
+
+filtered_fand = FILTER users2 BY fuzzy.F_AND(fuzzy.triangle_membership(wzrost, 140.0, 150.0, 160.0), fuzzy.trapezoid_membership(wiek,10.0,12.0,20.0,30.0)) > 0.5;
+
+DUMP filtered_fand;
+-- (zosia,samosia,150,12,uczen)
+
+filtered_for = FILTER users2 BY fuzzy.F_OR(fuzzy.triangle_membership(wzrost, 140.0, 150.0, 160.0), fuzzy.trapezoid_membership(wiek,10.0,12.0,20.0,30.0)) > 0.5;
+
+DUMP filtered_for;
+-- (zosia,samosia,150,12,uczen)
+-- (ALICJA,makota,160,18,prawnik)
+
+filtered_font = FILTER users2 BY fuzzy.F_NOT(fuzzy.trapezoid_membership(wiek,10.0,12.0,20.0,30.0)) > 0.5;
+
+DUMP filtered_font;
+-- (ala,makota,160,32,prawnik)
+-- (harry,potter,194,89,nauczyciel)
+-- (ola,makota,175,8,pacjent)
+
