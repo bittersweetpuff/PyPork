@@ -52,4 +52,3 @@ DUMP filtered_font;
 -- (ala,makota,160,32,prawnik)
 -- (harry,potter,194,89,nauczyciel)
 -- (ola,makota,175,8,pacjent)
-

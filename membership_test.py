@@ -12,7 +12,7 @@ def triangle_test():
         memberships.append(fz.triangle_membership(p, 5, 10, 12))
     
     plt.plot(fset, values)
-    plt.plot(points, memberships, 'o');
+    plt.plot(points, memberships, 'o')
     plt.show()
 
 def trapezoid_test():
@@ -25,9 +25,8 @@ def trapezoid_test():
         memberships.append(fz.trapezoid_membership(p, 1, 11, 14, 15))
 
     plt.plot(fset, values)
-    plt.plot(points, memberships, 'o');
+    plt.plot(points, memberships, 'o')
     plt.show()
-
 
 def left_test():
     fset = [24, 30]

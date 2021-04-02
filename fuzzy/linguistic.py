@@ -47,4 +47,3 @@ def get_patterns_names():
     for k,v in pattern.items():
         patterns_names.append(k)
     return patterns_names
-

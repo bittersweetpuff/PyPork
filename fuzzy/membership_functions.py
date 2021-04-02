@@ -40,4 +40,4 @@ def y_class_membership(x, a, b):
 
 def gaussian_membership(x, mean, sd):
     #NOT WORKING (YET)
-    return exp(((x - mean)**2)/2*(sd**2)) 
+    return exp(((x - mean)**2)/2*(sd**2))

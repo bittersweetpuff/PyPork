@@ -1,7 +1,7 @@
-def F_OR(values):
+def F_OR(*values):
     return max(values)
 
-def F_AND(values):
+def F_AND(*values):
     return min(values)
 
 def F_NOT(value):
