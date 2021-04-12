@@ -69,7 +69,7 @@ def _callProperFun(v, value):
         return gaussian_membership(value, float(v['a']), float(v['b']))
 
 
-def one_to_lingustic(pattern_name, value, level=0.5):
+def one_to_lingustic(pattern_name, value):
     value_patter = pattern[pattern_name]
     max_val = 0
     max_key = ''
@@ -88,9 +88,9 @@ def list_to_lingustic(pattern_name, values, level=0.5):
         results.append(res)
     return results
 
-def value_is(pattern_name, key, value, level=0.5): # because I cant use is
+def equal(pattern_name, value, key): 
     v = pattern[pattern_name][key]
-    return 1 if _callProperFun(v, value) >= level else 0
+    return _callProperFun(v, value)
 
 def add_new_pattern(pattern_name,new_pattern):
     pattern[pattern_name] = new_pattern

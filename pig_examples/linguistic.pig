@@ -6,7 +6,7 @@ DUMP users;
 -- (ala,makota,170,32)
 -- (harry,potter,144,89)
 -- (ola,makota,175,8)
-fuzzy_users = FOREACH users GENERATE firstname, lastname, wzrost, fuzzy.one_to_lingustic('wzrost', wzrost,0.3) as fuzzy_wzrost, wiek, fuzzy.one_to_lingustic('wiek', wiek,0.3) as fuzzy_wiek;
+fuzzy_users = FOREACH users GENERATE firstname, lastname, wzrost, fuzzy.one_to_lingustic('wzrost', wzrost) as fuzzy_wzrost, wiek, fuzzy.one_to_lingustic('wiek', wiek) as fuzzy_wiek;
  
 DUMP fuzzy_users;
 -- (zosia,samosia,150,niski,12,mlody)
@@ -20,7 +20,7 @@ DUMP grouped_fuzzy_users;
 -- (wysoki,{(ola,makota,175,wysoki,8,dzieciak),(ala,makota,170,wysoki,32,stary)})
  
 users2 = LOAD 'user_data' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int, zajecie:chararray);
-fuzzy_us2 = FOREACH users2 GENERATE fuzzy.one_to_lingustic('wzrost', wzrost,0.3) as fw, zajecie;
+fuzzy_us2 = FOREACH users2 GENERATE fuzzy.one_to_lingustic('wzrost', wzrost) as fw, zajecie;
  
 self_joined_fuzzy_users = JOIN fuzzy_users BY fuzzy_wzrost, fuzzy_us2 BY fw;
  
@@ -34,6 +34,10 @@ DUMP self_joined_fuzzy_users;
 -- (ala,makota,170,wysoki,32,stary,wysoki,pacjent)
 -- (ala,makota,170,wysoki,32,stary,wysoki,prawnik)
 
+filtered = FILTER users BY fuzzy.equal('wzrost',wzrost,'wysoki') > 0.5;
+
+DUMP filtered;
+-- (ola,makota,175,8)
 
 filtered_fand = FILTER users2 BY fuzzy.F_AND(fuzzy.triangle_membership(wzrost, 140.0, 150.0, 160.0), fuzzy.trapezoid_membership(wiek,10.0,12.0,20.0,30.0)) > 0.5;
 
@@ -52,3 +56,15 @@ DUMP filtered_font;
 -- (ala,makota,160,32,prawnik)
 -- (harry,potter,194,89,nauczyciel)
 -- (ola,makota,175,8,pacjent)
+
+filtered_fand2 = FILTER users BY fuzzy.F_AND(fuzzy.equal('wzrost',wzrost,'wysoki'), fuzzy.equal('wiek',wiek,'dzieciak')) > 0.1;
+
+DUMP filtered_fand2;
+-- (ola,makota,175,8)
+
+filtered_for2 = FILTER users BY fuzzy.F_OR(fuzzy.equal('wzrost',wzrost,'wysoki'), fuzzy.equal('wiek',wiek,'emeryt')) > 0.5;
+
+DUMP filtered_for2;
+-- (harry,potter,194,89)
+-- (ola,makota,175,8)
+
