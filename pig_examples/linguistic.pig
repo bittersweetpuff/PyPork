@@ -34,7 +34,7 @@ DUMP self_joined_fuzzy_users;
 -- (ala,makota,170,wysoki,32,stary,wysoki,pacjent)
 -- (ala,makota,170,wysoki,32,stary,wysoki,prawnik)
 
-filtered = FILTER users BY fuzzy.equal('wzrost',wzrost,'wysoki') > 0.5;
+filtered = FILTER users BY fuzzy.fuzzy_level('wzrost',wzrost,'wysoki') > 0.5;
 
 DUMP filtered;
 -- (ola,makota,175,8)
@@ -57,12 +57,12 @@ DUMP filtered_font;
 -- (harry,potter,194,89,nauczyciel)
 -- (ola,makota,175,8,pacjent)
 
-filtered_fand2 = FILTER users BY fuzzy.F_AND(fuzzy.equal('wzrost',wzrost,'wysoki'), fuzzy.equal('wiek',wiek,'dzieciak')) > 0.1;
+filtered_fand2 = FILTER users BY fuzzy.F_AND(fuzzy.fuzzy_level('wzrost',wzrost,'wysoki'), fuzzy.fuzzy_level('wiek',wiek,'dzieciak')) > 0.1;
 
 DUMP filtered_fand2;
 -- (ola,makota,175,8)
 
-filtered_for2 = FILTER users BY fuzzy.F_OR(fuzzy.equal('wzrost',wzrost,'wysoki'), fuzzy.equal('wiek',wiek,'emeryt')) > 0.5;
+filtered_for2 = FILTER users BY fuzzy.F_OR(fuzzy.fuzzy_level('wzrost',wzrost,'wysoki'), fuzzy.fuzzy_level('wiek',wiek,'emeryt')) > 0.5;
 
 DUMP filtered_for2;
 -- (harry,potter,194,89)
