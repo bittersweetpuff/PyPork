@@ -348,14 +348,15 @@ def fuzzy_level(pattern_name, value, key):
 
 def _line_intersection(L1, L2):
     """
+    THIS IS PRIVATE FUNCTION USED IN FEQUAL
     This function determines if two lines intersect. It is helper function and it should not be used directly.
 
     Parameters
     ----------
     L1
-        TODO
+        first line
     L2
-        TODO
+        second line
 
     Example
     ----------
@@ -408,7 +409,7 @@ def fequal(value1, fuzzy_level1, value2, fuzzy_level2):
 
     Returns
     ----------
-    TODO
+    rate of compliance (stopień zgodności dwóch zmiennych rozmytych)
     """
 
     value1 = float(value1)
