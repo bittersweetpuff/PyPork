@@ -1,11 +1,18 @@
+/*
+* Example Pig script
+* Adjust path to main_fuzzy.py and then you can run the script.
+* To run this script use command: pig -x local linguistic.pig.
+*/
+
 REGISTER '/home/piggy/PyPork/main_fuzzy.py' using jython as fuzzy
- 
-users = LOAD 'user_data' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int);
+
+users = LOAD 'user_data.csv' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int);
 DUMP users;
 -- (zosia,samosia,150,12)
 -- (ala,makota,170,32)
 -- (harry,potter,144,89)
 -- (ola,makota,175,8)
+
 fuzzy_users = FOREACH users GENERATE firstname, lastname, wzrost, fuzzy.one_to_lingustic('wzrost', wzrost) as fuzzy_wzrost, wiek, fuzzy.one_to_lingustic('wiek', wiek) as fuzzy_wiek;
  
 DUMP fuzzy_users;
@@ -19,11 +26,11 @@ DUMP grouped_fuzzy_users;
 -- (niski,{(harry,potter,144,niski,89,emeryt),(zosia,samosia,150,niski,12,mlody)})
 -- (wysoki,{(ola,makota,175,wysoki,8,dzieciak),(ala,makota,170,wysoki,32,stary)})
  
-users2 = LOAD 'user_data' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int, zajecie:chararray);
+users2 = LOAD 'user_data.csv' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int, zajecie:chararray);
 fuzzy_us2 = FOREACH users2 GENERATE fuzzy.one_to_lingustic('wzrost', wzrost) as fw, zajecie;
- 
+
 self_joined_fuzzy_users = JOIN fuzzy_users BY fuzzy_wzrost, fuzzy_us2 BY fw;
- 
+
 DUMP self_joined_fuzzy_users;
 -- (harry,potter,144,niski,89,emeryt,niski,nauczyciel)
 -- (harry,potter,144,niski,89,emeryt,niski,uczen)
@@ -67,4 +74,3 @@ filtered_for2 = FILTER users BY fuzzy.F_OR(fuzzy.fuzzy_level('wzrost',wzrost,'wy
 DUMP filtered_for2;
 -- (harry,potter,194,89)
 -- (ola,makota,175,8)
-
