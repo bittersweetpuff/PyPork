@@ -15,7 +15,7 @@ DUMP users;
 -- (ola,makota,175,8)
 
 fuzzy_users = FOREACH users GENERATE firstname, lastname, wzrost, fuzzy.one_to_lingustic('wzrost', wzrost) as fuzzy_wzrost, wiek, fuzzy.one_to_lingustic('wiek', wiek) as fuzzy_wiek;
- 
+
 DUMP fuzzy_users;
 -- (zosia,samosia,150,niski,12,mlody)
 -- (ala,makota,160,niski,32,stary)
@@ -23,12 +23,12 @@ DUMP fuzzy_users;
 -- (harry,potter,194,gigant,89,emeryt)
 -- (ola,makota,175,wysoki,8,dzieciak)
 grouped_fuzzy_users = GROUP fuzzy_users BY fuzzy_wzrost;
- 
+
 DUMP grouped_fuzzy_users;
 -- (niski,{(ALICJA,makota,160,niski,18,mlody),(ala,makota,160,niski,32,stary),(zosia,samosia,150,niski,12,mlody)})
 -- (gigant,{(harry,potter,194,gigant,89,emeryt)})
 -- (wysoki,{(ola,makota,175,wysoki,8,dzieciak)})
- 
+
 users2 = LOAD 'user_data.csv' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int, zajecie:chararray);
 fuzzy_us2 = FOREACH users2 GENERATE fuzzy.one_to_lingustic('wzrost', wzrost) as fw, zajecie;
 
