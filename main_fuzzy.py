@@ -1,5 +1,6 @@
 from math import exp
 import json
+import csv
 with open('pattern.json') as f:
     pattern = json.load(f)
 
@@ -132,6 +133,35 @@ def fequal(value1, fuzzy_level1, value2, fuzzy_level2):
         if lvl > max_level and lvl <= 1:
             max_level = lvl
     return max_level
+
+def fjoin(row_category,first_file,fuzzylevel1,second_file,fuzzylevel2,valueRowIndex,level=0.5) :
+    with open (first_file) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter = ',')
+        data1 =[]
+        values1= []
+        for row in csv_reader:
+            data1.append(row)
+            values1.append(row[row_category])
+
+        with open (second_file) as csv_file2:
+            csv_reader2 = csv.reader(csv_file2, delimiter = ',')
+            data2=[]
+            values2= []
+            for row in csv_reader2:
+                data2.append(row)
+                values2.append(row[row_category])
+        
+            selected = []
+            for i in range(0,len(values1)):
+                curr_level = fequal(values1[i], fuzzylevel1, values2[valueRowIndex],fuzzylevel2)
+                print("ST ZGOD: ",curr_level)
+                if(curr_level >= level):
+                    selected.append(data1[i])
+            joined = []
+            joined.append(data2[valueRowIndex])
+            joined.append(selected)
+            return joined
+
 
 def add_new_pattern(pattern_name,new_pattern):
     pattern[pattern_name] = new_pattern

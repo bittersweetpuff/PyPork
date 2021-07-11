@@ -8,14 +8,14 @@ lin.add_new_pattern("wzrost",{
 })
 print("Available patterns - ",lin.get_patterns_names())
 
-res = lin.value_is("wzrost","niski",170)
-print("170 is wysoki?",res)
+#res = lin.value_is("wzrost","niski",170)
+#print("170 is wysoki?",res)
 
 res = lin.one_to_lingustic("wzrost",170)
 print("170 is ",res)
 
-res = lin.list_to_lingustic("wzrost",[170, 110])
-print("170 and 110 are - ",res)
+#res = lin.list_to_lingustic("wzrost",[170, 110])
+#print("170 and 110 are - ",res)
 
 lin.add_new_pattern("wiek",{
     "mlody":{"function": "triangle", "a":10,"b":15,"c":30}, 
@@ -23,5 +23,10 @@ lin.add_new_pattern("wiek",{
     })
 print("Available patterns - ",lin.get_patterns_names())
 
-res = lin.one_to_lingustic("wiek",11, 0.1)
+res = lin.one_to_lingustic("wiek",11)
 print("11 is",res)
+
+print()
+print("FJOIN:")
+res = lin.fjoin(2,"D:\\PyPork\\PyPork\\pig_examples\\user_data",10, "D:\\PyPork\\PyPork\\pig_examples\\user_data2",1,10)
+print(res)
