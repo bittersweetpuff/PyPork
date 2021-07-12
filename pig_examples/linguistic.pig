@@ -5,7 +5,7 @@
 */
 
 REGISTER '/home/piggy/PyPork/main_fuzzy.py' using jython as fuzzy
-
+ 
 users = LOAD 'user_data.csv' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int);
 DUMP users;
 -- (zosia,samosia,150,12)
@@ -14,7 +14,7 @@ DUMP users;
 -- (harry,potter,194,89)
 -- (ola,makota,175,8)
 
-fuzzy_users = FOREACH users GENERATE firstname, lastname, wzrost, fuzzy.one_to_lingustic('wzrost', wzrost) as fuzzy_wzrost, wiek, fuzzy.one_to_lingustic('wiek', wiek) as fuzzy_wiek;
+fuzzy_users = FOREACH users GENERATE firstname, lastname, wzrost, fuzzy.one_to_lingustic('wzrost', wzrost) as fuzzy_wzrost, fuzzy.fuzzy_level('wzrost',wzrost,fuzzy.one_to_lingustic('wzrost', wzrost)) as level, wiek, fuzzy.one_to_lingustic('wiek', wiek) as fuzzy_wiek;
 
 DUMP fuzzy_users;
 -- (zosia,samosia,150,niski,12,mlody)
@@ -22,7 +22,7 @@ DUMP fuzzy_users;
 -- (ALICJA,makota,160,niski,18,mlody)
 -- (harry,potter,194,gigant,89,emeryt)
 -- (ola,makota,175,wysoki,8,dzieciak)
-grouped_fuzzy_users = GROUP fuzzy_users BY fuzzy_wzrost;
+grouped_fuzzy_users = GROUP users BY fuzzy.one_to_lingustic('wzrost', wzrost) ;
 
 DUMP grouped_fuzzy_users;
 -- (niski,{(ALICJA,makota,160,niski,18,mlody),(ala,makota,160,niski,32,stary),(zosia,samosia,150,niski,12,mlody)})
@@ -32,7 +32,9 @@ DUMP grouped_fuzzy_users;
 users2 = LOAD 'user_data.csv' USING PigStorage(',') AS (firstname: chararray, lastname:chararray,wzrost:int, wiek:int, zajecie:chararray);
 fuzzy_us2 = FOREACH users2 GENERATE fuzzy.one_to_lingustic('wzrost', wzrost) as fw, zajecie;
 
-self_joined_fuzzy_users = JOIN fuzzy_users BY fuzzy_wzrost, fuzzy_us2 BY fw;
+-- oba join daja ten sam wynik
+-- self_joined_fuzzy_users = JOIN fuzzy_users BY fuzzy_wzrost, fuzzy_us2 BY fw;
+self_joined_fuzzy_users = JOIN users BY fuzzy.one_to_lingustic('wzrost', wzrost), users2 BY fuzzy.one_to_lingustic('wzrost', wzrost);
 
 DUMP self_joined_fuzzy_users;
 -- (ALICJA,makota,160,niski,18,mlody,niski,prawnik)
@@ -55,7 +57,7 @@ DUMP filtered;
 filtered_fand = FILTER users2 BY fuzzy.F_AND(fuzzy.triangle_membership(wzrost, 140.0, 150.0, 160.0), fuzzy.trapezoid_membership(wiek,10.0,12.0,20.0,30.0)) > 0.5;
 
 DUMP filtered_fand;
--- (zosia,samosia,150,12,uczen)
+-- -- (zosia,samosia,150,12,uczen)
 
 filtered_for = FILTER users2 BY fuzzy.F_OR(fuzzy.triangle_membership(wzrost, 140.0, 150.0, 160.0), fuzzy.trapezoid_membership(wiek,10.0,12.0,20.0,30.0)) > 0.5;
 
@@ -80,3 +82,17 @@ filtered_for2 = FILTER users BY fuzzy.F_OR(fuzzy.fuzzy_level('wzrost',wzrost,'wy
 DUMP filtered_for2;
 -- (harry,potter,194,89)
 -- (ola,makota,175,8)
+
+-- zamiast funckji około (lub around) mamy funkcje przynależności, tutaj jest przykład dla trójkątnej
+tmp = FILTER users2 BY fuzzy.triangle_membership(wzrost, 140.0, 150.0, 160.0) >0.5;
+DUMP tmp;
+-- (zosia,samosia,150,12,uczen)  
+
+-- przyklad z fequal ktory mial byc do fjoin
+tmp = FOREACH users2 GENERATE firstname, fuzzy.fequal(wzrost, 10, wzrost+5, 5);
+DUMP tmp;
+-- (zosia,0.6666666666666667)
+-- (ala,0.6666666666666667)
+-- (ALICJA,0.6666666666666667)
+-- (harry,0.6666666666666667)
+-- (ola,0.6666666666666667)   
