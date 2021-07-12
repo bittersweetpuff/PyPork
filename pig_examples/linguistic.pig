@@ -16,17 +16,15 @@ DUMP users;
 
 --Zamiana wartości na zmienną lingwistyczną(one_to_lingustic) wraz z wyliczeniem stopnia zgodnośći(fuzzy_level)
 fuzzy_users = FOREACH users GENERATE firstname, lastname, wzrost, fuzzy.one_to_lingustic('wzrost', wzrost) as fuzzy_wzrost, fuzzy.fuzzy_level('wzrost',wzrost,fuzzy.one_to_lingustic('wzrost', wzrost)) as level, wiek, fuzzy.one_to_lingustic('wiek', wiek) as fuzzy_wiek;
-
 DUMP fuzzy_users;
--- (zosia,samosia,150,niski,12,mlody)
--- (ala,makota,160,niski,32,stary)
--- (ALICJA,makota,160,niski,18,mlody)
--- (harry,potter,194,gigant,89,emeryt)
--- (ola,makota,175,wysoki,8,dzieciak)
+-- (zosia,samosia,150,niski,0.8,12,mlody)
+-- (ala,makota,160,niski,0.5,32,stary)
+-- (ALICJA,makota,161,niski,0.4,18,mlody)
+-- (harry,potter,194,gigant,0.7,89,emeryt)
+-- (ola,makota,175,wysoki,0.75,8,dzieciak) 
 
 --Groupowanie danych po zmiennej lingwistycznej:
 grouped_fuzzy_users = GROUP users BY fuzzy.one_to_lingustic('wzrost', wzrost) ;
-
 DUMP grouped_fuzzy_users;
 -- (niski,{(ALICJA,makota,160,niski,18,mlody),(ala,makota,160,niski,32,stary),(zosia,samosia,150,niski,12,mlody)})
 -- (gigant,{(harry,potter,194,gigant,89,emeryt)})
@@ -55,44 +53,39 @@ DUMP self_joined_fuzzy_users;
 
 --Funkcja fuzzy_level wylicza stopień zgodności dla podanej wartości do zmiennej lingwistycznej wywołując odpowiednią funkcję przynależności.
 filtered = FILTER users BY fuzzy.fuzzy_level('wzrost',wzrost,'wysoki') > 0.5;
-
 DUMP filtered;
 -- (ola,makota,175,8)
 
-Przykłady łączenia funkcji za pomocą F_AND, F_OR i F_NOT. 
+-- Przykłady łączenia funkcji za pomocą F_AND, F_OR i F_NOT. 
 
 filtered_fand = FILTER users2 BY fuzzy.F_AND(fuzzy.triangle_membership(wzrost, 140.0, 150.0, 160.0), fuzzy.trapezoid_membership(wiek,10.0,12.0,20.0,30.0)) > 0.5;
-
 DUMP filtered_fand;
 -- -- (zosia,samosia,150,12,uczen)
 
 filtered_for = FILTER users2 BY fuzzy.F_OR(fuzzy.triangle_membership(wzrost, 140.0, 150.0, 160.0), fuzzy.trapezoid_membership(wiek,10.0,12.0,20.0,30.0)) > 0.5;
-
 DUMP filtered_for;
 -- (zosia,samosia,150,12,uczen)
 -- (ALICJA,makota,160,18,prawnik)
 
 filtered_font = FILTER users2 BY fuzzy.F_NOT(fuzzy.trapezoid_membership(wiek,10.0,12.0,20.0,30.0)) > 0.5;
-
 DUMP filtered_font;
 -- (ala,makota,160,32,prawnik)
 -- (harry,potter,194,89,nauczyciel)
 -- (ola,makota,175,8,pacjent)
 
 filtered_fand2 = FILTER users BY fuzzy.F_AND(fuzzy.fuzzy_level('wzrost',wzrost,'wysoki'), fuzzy.fuzzy_level('wiek',wiek,'dzieciak')) > 0.1;
-
 DUMP filtered_fand2;
 -- (ola,makota,175,8)
 
 filtered_for2 = FILTER users BY fuzzy.F_OR(fuzzy.fuzzy_level('wzrost',wzrost,'wysoki'), fuzzy.fuzzy_level('wiek',wiek,'emeryt')) > 0.5;
-
 DUMP filtered_for2;
 -- (harry,potter,194,89)
 -- (ola,makota,175,8)
 
 --  Funkcja fuzzy.*_membership realizuje założenie funkcji około, gdyż zwraca stopień zgodności dla podanej funkcji przynależności. 
-Przykładem takiego filtrowania byłoby wywołanie " fuzzy.*_membership(zmienna, parametry) > minimalne_ktyterium_zgodności). Poniżej przykład dla funkcji trójkątnej:
-
+-- Przykładem takiego filtrowania byłoby wywołanie fuzzy.*_membership(zmienna, parametry) > minimalne_ktyterium_zgodności). 
+-- Dostępne są funkcje trojkatna (triangle_membership), trapezowa (trapezoid_membership), l class (l_class_membership), y class (y_class_membership) oraz gaussowska (gaussian_membership)
+-- Poniżej przykład dla funkcji trójkątnej:
 tmp = FILTER users2 BY fuzzy.triangle_membership(wzrost, 140.0, 150.0, 160.0) >0.5;
 DUMP tmp;
 -- (zosia,samosia,150,12,uczen)  
