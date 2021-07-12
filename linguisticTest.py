@@ -28,5 +28,5 @@ print("11 is",res)
 
 print()
 print("FJOIN:")
-res = lin.fjoin(2,"D:\\PyPork\\PyPork\\pig_examples\\user_data",10, "D:\\PyPork\\PyPork\\pig_examples\\user_data2",1,10)
+res = lin.fjoin(2,"D:\\PyPork\\PyPork\\pig_examples\\user_data",10, "D:\\PyPork\\PyPork\\pig_examples\\user_data2",2,1,0.4)
 print(res)
